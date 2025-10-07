@@ -1,108 +1,94 @@
-import { useEffect, useMemo, useState } from "react";
-import { readPoll, writePoll } from "./pollStorage";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
 
 export default function App() {
-  const [state, setState] = useState(() => readPoll());
+  const [userID, setUserID] = useState("");
+  const [isReligion, setIsReligion] = useState();
+  const [results, setResults] = useState([]);
 
   useEffect(() => {
-    writePoll(state);
-  }, [state]);
+    getResults();
+  }, []);
 
-  const total = state.votes.sheela + state.votes.teshuva;
-  const pct = useMemo(
-    () => ({
-      sheela: total ? Math.round((state.votes.sheela / total) * 100) : 0,
-      teshuva: total ? Math.round((state.votes.teshuva / total) * 100) : 0,
-    }),
-    [total, state.votes]
-  );
+  const getResults = async () => {
+    try {
+      const resp = await axios.get(
+        "http://localhost/ask-me-backend/index.php?r=results"
+      );
+      setResults(resp.data);
+      console.log(resp.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
-  function handleVote(choice) {
-    if (state.myVote) return; // כבר הצבעת בדפדפן זה
-    setState((prev) => ({
-      myVote: choice,
-      votes: {
-        sheela: prev.votes.sheela + (choice === "sheela" ? 1 : 0),
-        teshuva: prev.votes.teshuva + (choice === "teshuva" ? 1 : 0),
-      },
-    }));
-  }
-
-  function resetMyVote() {
-    setState((prev) => ({ ...prev, myVote: null }));
+  function handleVote(e) {
+    if (userID.length > 9 || userID.length < 8) {
+      alert("אנא הכנס תעודת זהות תקינה");
+    }
+    console.log(results);
   }
 
   return (
     <div className="app">
       <header className="card header">
         <h1>סקר חוזרים בתשובה / שאלה הגדול</h1>
-        <p>איך היית מגדיר/ה את עצמך כרגע?</p>
+        <p>
+          אהלן חברים, אשמח אם תוכלו לענות על הסקר כדי לתת לנו תמונת מצב על
+          חוזרים בתשובה / שאלה. הסקר אנונימי לחלוטין ופרטיכם לא יישמרו בשום
+          מקום. מטרתו של סקר זה היא לתת תמונת מצב בקרב החוזרים בתשובה / שאלה
+          בצורה אמיתית לאנשים שלא יכולים לענות בצינורות המקובלים
+        </p>
       </header>
-
       <main className="card">
+        <h2>איך היית מגדיר/ה את עצמך כרגע?</h2>
+        <p>הכנס תעודת זהות</p>
+        <input className="userId" type="number" />
+        <h4>*אנחנו לא שומרים את תעודת הזהות שלך</h4>
         <h2>בחר/י תשובה אחת</h2>
         <div className="options">
           <button
-            className={`btn ${state.myVote === "sheela" ? "selected" : ""}`}
-            onClick={() => handleVote("sheela")}
-            aria-pressed={state.myVote === "sheela"}
+            className={isReligion ? "btn selected" : "btn"}
+            onClick={() => setIsReligion(false)}
           >
             חוזר/ת בשאלה
           </button>
           <button
-            className={`btn ${state.myVote === "teshuva" ? "selected" : ""}`}
-            onClick={() => handleVote("teshuva")}
-            aria-pressed={state.myVote === "teshuva"}
+            className={isReligion ? "btn " : "btn selected"}
+            onClick={() => setIsReligion(true)}
           >
             חוזר/ת בתשובה
           </button>
         </div>
-
-        {state.myVote && (
-          <div className="info">
-            <span>תודה! ההצבעה נשמרה בדפדפן זה.</span>
-            <button className="link" onClick={resetMyVote}>
-              עריכת בחירה
-            </button>
-          </div>
-        )}
+        <button className="btn-send" onClick={(e) => handleVote(e.target)}>
+          שלח
+        </button>
         <section className="results">
-          <h3>תוצאות מקומיות (במכשיר זה)</h3>
+          <h3>תוצאות בזמן אמת</h3>
           <div className="bars">
             <div className="bar">
               <div className="bar-label">חוזר בשאלה</div>
-              <div
-                className="bar-track"
-                aria-label={`חוזר בשאלה ${pct.sheela}%`}
-              >
-                <div className="bar-fill" style={{ width: pct.sheela + "%" }} />
+              <div className="bar-track">
+                <div className="bar-fill" />
               </div>
-              <div className="bar-pct">{pct.sheela}%</div>
+              <div className="bar-pct">{results[0]?.isReligion}</div>
             </div>
-
             <div className="bar">
               <div className="bar-label">חוזר בתשובה</div>
-              <div
-                className="bar-track"
-                aria-label={`חוזר בתשובה ${pct.teshuva}%`}
-              >
-                <div
-                  className="bar-fill"
-                  style={{ width: pct.teshuva + "%" }}
-                />
+              <div className="bar-track">
+                <div className="bar-fill" />
               </div>
-              <div className="bar-pct">{pct.teshuva}%</div>
+              <div className="bar-pct">{results[0]?.notReligion}</div>
             </div>
           </div>
-          <div className="totals">סך הכל הצבעות: {total}</div>
+          <div className="totals">סך הכל הצבעות: {results[0]?.total}</div>
         </section>
+        <footer className="footer">
+          <p>הסקר מרכז נתונים מהלמ"ס וארגוני חזרה בתשובה / שאלה</p>
+          <small>&copy; כל הזכויות שמורות לינון בר &copy;</small>
+        </footer>
       </main>
-
-      <footer className="footer">
-        <small>&copy; כל הזכויות שמורות לינון בר &copy;</small>
-      </footer>
     </div>
   );
 }
