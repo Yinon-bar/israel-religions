@@ -30,6 +30,28 @@ body {
   display: grid;
   gap: 16px;
 }
+
+.app .modal {
+  border-radius: 2rem;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: min(600px, calc(100% - 32px));
+  height: 600px;
+  max-height: calc(100dvh - 32px);
+  background-color: #0e1428e1;
+  color: #fff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.app .modal.hidden {
+  display: none;
+}
+
 .card {
   background: rgba(0, 0, 0, 0.8);
   color: #fff;
@@ -86,7 +108,7 @@ h2 {
 .btn {
   padding: 14px 18px;
   border-radius: 14px;
-  background: #0953a7;
+  background-color: rgba(0, 0, 0, 0.6);
   color: #fff;
   border: none;
   cursor: pointer;
@@ -101,7 +123,7 @@ h2 {
 .btn.selected {
   padding: 14px 18px;
   border-radius: 14px;
-  background-color: rgba(0, 0, 0, 0.6);
+  background: #0953a7;
   color: #fff;
   border: none;
   cursor: pointer;

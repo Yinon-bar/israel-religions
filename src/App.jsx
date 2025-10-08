@@ -4,8 +4,9 @@ import "./App.css";
 
 export default function App() {
   const [userID, setUserID] = useState("");
-  const [isReligion, setIsReligion] = useState();
+  const [isReligion, setIsReligion] = useState(0);
   const [results, setResults] = useState([]);
+  const [modal, setModal] = useState(false);
 
   useEffect(() => {
     getResults();
@@ -24,6 +25,7 @@ export default function App() {
   };
 
   const makeVote = async () => {
+    console.log(userID, isReligion);
     try {
       const resp = await axios.post(
         "https://chidon-api.site/index.php?r=vote",
@@ -33,6 +35,13 @@ export default function App() {
         }
       );
       console.log(resp.data);
+      setModal(true);
+      setUserID("");
+      setIsReligion(0);
+      setTimeout(() => {
+        setModal(false);
+      }, 2000);
+      getResults();
     } catch (error) {
       console.log(error.message);
     }
@@ -48,6 +57,9 @@ export default function App() {
 
   return (
     <div className="app">
+      <div className={modal ? "modal" : "modal hidden"}>
+        {modal ? <h1>הנתונים נשמרו בהצלחה, תודה על השתתפותך</h1> : ""}
+      </div>
       <header className="card header">
         <h1>סקר חוזרים בתשובה / שאלה הגדול</h1>
         <p>
@@ -70,14 +82,14 @@ export default function App() {
         <h2>בחר/י תשובה אחת</h2>
         <div className="options">
           <button
-            className={isReligion ? "btn selected" : "btn"}
-            onClick={() => setIsReligion(false)}
+            className={isReligion === 0 ? "btn selected" : "btn"}
+            onClick={() => setIsReligion(0)}
           >
             חוזר/ת בשאלה
           </button>
           <button
-            className={isReligion ? "btn " : "btn selected"}
-            onClick={() => setIsReligion(true)}
+            className={isReligion === 0 ? "btn " : "btn selected"}
+            onClick={() => setIsReligion(1)}
           >
             חוזר/ת בתשובה
           </button>
@@ -93,14 +105,14 @@ export default function App() {
               <div className="bar-track">
                 <div className="bar-fill" />
               </div>
-              <div className="bar-pct">{results[0]?.isReligion}</div>
+              <div className="bar-pct">{results[0]?.notReligion}</div>
             </div>
             <div className="bar">
               <div className="bar-label">חוזר בתשובה</div>
               <div className="bar-track">
                 <div className="bar-fill" />
               </div>
-              <div className="bar-pct">{results[0]?.notReligion}</div>
+              <div className="bar-pct">{results[0]?.isReligion}</div>
             </div>
           </div>
           <div className="totals">סך הכל הצבעות: {results[0]?.total}</div>
