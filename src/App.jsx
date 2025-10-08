@@ -23,10 +23,23 @@ export default function App() {
     }
   };
 
+  const makeVote = async () => {
+    try {
+      const resp = await axios.get("https://chidon-api.site/index.php?r=vote", {
+        user_id: 200454551,
+        choice: 1,
+      });
+      console.log(resp.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   function handleVote(e) {
     if (userID.length > 9 || userID.length < 8) {
       alert("אנא הכנס תעודת זהות תקינה");
     }
+    makeVote();
     console.log(results);
   }
 
@@ -44,7 +57,12 @@ export default function App() {
       <main className="card">
         <h2>איך היית מגדיר/ה את עצמך כרגע?</h2>
         <p>הכנס תעודת זהות</p>
-        <input className="userId" type="number" />
+        <input
+          className="userId"
+          type="number"
+          value={userID}
+          onChange={(e) => setUserID(e.target.value)}
+        />
         <h4>*אנחנו לא שומרים את תעודת הזהות שלך</h4>
         <h2>בחר/י תשובה אחת</h2>
         <div className="options">
