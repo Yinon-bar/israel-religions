@@ -179,14 +179,22 @@ h2 {
   color: var(--text);
 }
 .bar-track {
-  height: 18px;
+  height: 24px;
   background: #0e1428;
   border-radius: 999px;
   position: relative;
   overflow: hidden;
 }
+
+.bar-fill .presentage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  color: #fff;
+}
+
 .bar-fill {
-  width: 50%;
   position: absolute;
   inset: 0 0 0 auto;
   background: linear-gradient(90deg, #0953a7);

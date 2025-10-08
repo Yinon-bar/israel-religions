@@ -7,6 +7,12 @@ export default function App() {
   const [isReligion, setIsReligion] = useState(0);
   const [results, setResults] = useState([]);
   const [modal, setModal] = useState(false);
+  const religionPresent = `${Math.round(
+    (results[0]?.isReligion / results[0]?.total) * 100
+  )}%`;
+  const notReligionPresent = `${Math.round(
+    (results[0]?.notReligion / results[0]?.total) * 100
+  )}%`;
 
   useEffect(() => {
     getResults();
@@ -105,8 +111,12 @@ export default function App() {
               <div className="bar-track">
                 <div
                   className="bar-fill"
-                  style={{ width: results[0]?.notReligion * 10 }}
-                />
+                  style={{
+                    width: notReligionPresent,
+                  }}
+                >
+                  <span className="presentage"> {notReligionPresent}</span>
+                </div>
               </div>
               <div className="bar-pct">{results[0]?.notReligion}</div>
             </div>
@@ -115,8 +125,12 @@ export default function App() {
               <div className="bar-track">
                 <div
                   className="bar-fill"
-                  style={{ width: results[0]?.isReligion * 10 }}
-                />
+                  style={{
+                    width: religionPresent,
+                  }}
+                >
+                  <span className="presentage"> {religionPresent}</span>
+                </div>
               </div>
               <div className="bar-pct">{results[0]?.isReligion}</div>
             </div>
