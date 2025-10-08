@@ -103,14 +103,20 @@ export default function App() {
             <div className="bar">
               <div className="bar-label">חוזר בשאלה</div>
               <div className="bar-track">
-                <div className="bar-fill" />
+                <div
+                  className="bar-fill"
+                  style={{ width: results[0]?.notReligion * 10 }}
+                />
               </div>
               <div className="bar-pct">{results[0]?.notReligion}</div>
             </div>
             <div className="bar">
               <div className="bar-label">חוזר בתשובה</div>
               <div className="bar-track">
-                <div className="bar-fill" />
+                <div
+                  className="bar-fill"
+                  style={{ width: results[0]?.isReligion * 10 }}
+                />
               </div>
               <div className="bar-pct">{results[0]?.isReligion}</div>
             </div>
