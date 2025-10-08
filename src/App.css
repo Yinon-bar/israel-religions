@@ -39,7 +39,7 @@ body {
   justify-content: center;
   position: absolute;
   width: min(600px, calc(100% - 32px));
-  height: 600px;
+  height: 800px;
   max-height: calc(100dvh - 32px);
   background-color: #0e1428e1;
   color: #fff;

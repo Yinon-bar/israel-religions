@@ -6,7 +6,7 @@ export default function App() {
   const [userID, setUserID] = useState("");
   const [isReligion, setIsReligion] = useState(0);
   const [results, setResults] = useState([]);
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState();
   const religionPresent = `${Math.round(
     (results[0]?.isReligion / results[0]?.total) * 100
   )}%`;
@@ -41,15 +41,21 @@ export default function App() {
         }
       );
       console.log(resp.data);
-      setModal(true);
+      setModal(resp.data.status);
       setUserID("");
       setIsReligion(0);
       setTimeout(() => {
-        setModal(false);
+        setModal();
       }, 2000);
       getResults();
     } catch (error) {
-      console.log(error.message);
+      console.log(error.response.data);
+      setUserID("");
+      setIsReligion(0);
+      setModal(error.response.data.error);
+      setTimeout(() => {
+        setModal();
+      }, 2000);
     }
   };
 
@@ -64,7 +70,7 @@ export default function App() {
   return (
     <div className="app">
       <div className={modal ? "modal" : "modal hidden"}>
-        {modal ? <h1>הנתונים נשמרו בהצלחה, תודה על השתתפותך</h1> : ""}
+        {modal ? <h1>{modal}</h1> : ""}
       </div>
       <header className="card header">
         <h1>סקר חוזרים בתשובה / שאלה הגדול</h1>
