@@ -25,10 +25,13 @@ export default function App() {
 
   const makeVote = async () => {
     try {
-      const resp = await axios.get("https://chidon-api.site/index.php?r=vote", {
-        user_id: 200454551,
-        choice: 1,
-      });
+      const resp = await axios.post(
+        "https://chidon-api.site/index.php?r=vote",
+        {
+          user_id: userID,
+          choice: isReligion,
+        }
+      );
       console.log(resp.data);
     } catch (error) {
       console.log(error.message);
