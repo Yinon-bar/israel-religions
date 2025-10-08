@@ -14,7 +14,7 @@ export default function App() {
   const getResults = async () => {
     try {
       const resp = await axios.get(
-        "http://localhost/ask-me-backend/index.php?r=results"
+        "https://chidon-api.site/index.php?r=results"
       );
       setResults(resp.data);
       console.log(resp.data);
